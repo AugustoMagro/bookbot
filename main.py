@@ -1,46 +1,30 @@
+from stats import count_words, count_letters
+import sys
 
-class Main:
-    def __init__(self):
-        book_path = "books/frankenstein.txt"
-        book = Main.read(book_path)
-        words = Main.count_words(book.split())
-        letters = Main.count_letters(book)
-        report = Main.report(letters)
-        report.sort(reverse=True, key=Main.sort_on)
-        
-        print("-"*10 + " Begin report of " + book_path + "-"*10)
-        print(f"{words} words found in the document")
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python3 main.py <path_to_book>")
+        sys.exit(1)
+    book_path = sys.argv[1] 
+    book = get_book_text(book_path)
+    num_words = count_words(book.split()) 
+    letters = count_letters(book) 
+    #print(f"{num_words} words found in the document")
+    #print(letters)
+    print("="*12 + " BOOKBOT " + "="*12)
+    print(f"Analyzing book found at {book_path}...")
+    print("-"*10 + " Word Count " + "-"*10)
+    print(f"Found {num_words} total words")
 
-        for x in report:
-            print(f"The '{x["letter"]}' character was found {x["count"]} times")
+    print("-"*7 + " Character Count " + "-"*7)
+    for x in letters:
+        print(f"{x}: {letters[x]}")
 
-        print("-"*10 + " End report " + "-"*10)
+    print("="*12 + " END " + "="*12)
 
-    def sort_on(dict):
-        return dict["count"]
+def get_book_text(book_path):
+    with open(book_path) as f:
+        file_content = f.read()
+        return file_content
 
-    def read(path):
-        with open(path) as f:
-            return f.read()
-
-    def count_words(book):
-        return len(book)
-
-    def count_letters(book):
-        letters = {}
-        for i in book:
-            if i.lower() in letters:
-                letters[i.lower()] += 1
-            else:
-                letters[i.lower()] = 1
-
-        return letters
-
-    def report(data):
-        list_letters = []
-        for x in data:
-            if x.isalpha() == True:
-                list_letters.append({"letter":x, "count":data[x]})
-        return list_letters
-        
-Main()
+main()
